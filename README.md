@@ -1,4 +1,4 @@
-# HTML_GUI
+# Basic 3D GUI
 
 This is an example for Basic 3D GUI.
 <br>
