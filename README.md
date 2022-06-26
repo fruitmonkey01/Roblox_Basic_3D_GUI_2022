@@ -9,6 +9,9 @@ Coding practices:
 <br>
 3. Show Readout information when mouse hoving over parts.
 <br>
+<br>
+4. Added percentage bars for Energy, People, and Resource.
+<br>
 
 Services used in the example:
 <br>

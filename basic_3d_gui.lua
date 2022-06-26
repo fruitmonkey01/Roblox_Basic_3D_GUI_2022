@@ -1,3 +1,6 @@
+-- References: 
+-- For Text Alignment (X-Axis): https://developer.roblox.com/en-us/api-reference/property/TextLabel/TextXAlignment
+
 -- Services
 local GuiService = game:GetService("GuiService")
 local UIS = game:GetService("UserInputService")
@@ -40,6 +43,36 @@ uiPadding.PaddingRight = UDim.new(0, 5)
 uiPadding.PaddingBottom = UDim.new(0, 5)
 uiPadding.Parent = parentFrame
 
+-- Array of text labels/fonts/sizes to output
+local txtLabelArray = {
+	{text = "Energy", font = Enum.Font.FredokaOne, size = 25, percentage = 75},
+	{text = "People", font = Enum.Font.FredokaOne, size = 25, percentage = 100},
+	{text = "Resource", font = Enum.Font.FredokaOne, size = 25, percentage = 20}
+}
+
+-- Create 2nd automatically-sized text frame
+local txtFrame = Instance.new("Frame", screenGui)
+txtFrame.AutomaticSize = Enum.AutomaticSize.XY
+txtFrame.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
+txtFrame.Size = UDim2.fromOffset(25, 100)
+txtFrame.Position = UDim2.new(0, mouse.X + 5, 0, mouse.Y - 100)
+
+-- Add 2nd list layout
+local listLayout = Instance.new("UIListLayout")
+listLayout.Padding = UDim.new(0, 5)
+listLayout.Parent = txtFrame
+
+-- Set 2nd rounded corners and padding for visual aesthetics
+local roundedCorner = Instance.new("UICorner")
+roundedCorner.Parent = txtFrame
+local uiPadding = Instance.new("UIPadding")
+uiPadding.PaddingTop = UDim.new(0, 5)
+uiPadding.PaddingLeft = UDim.new(0, 5)
+uiPadding.PaddingRight = UDim.new(0, 5)
+uiPadding.PaddingBottom = UDim.new(0, 5)
+uiPadding.Parent = txtFrame
+
+
 for i = 1, #labelArray do
 	-- Create an automatically-sized text label from array
 	local childLabel = Instance.new("TextLabel")
@@ -60,6 +93,37 @@ for i = 1, #labelArray do
 	uiPadding.PaddingRight = UDim.new(0, 5)
 	uiPadding.PaddingBottom = UDim.new(0, 5)
 	uiPadding.Parent = childLabel
+
+end
+
+for i = 1, #txtLabelArray do
+
+	local txtLabel = Instance.new("TextLabel")
+	txtLabel.AutomaticSize = Enum.AutomaticSize.Y
+	local percentage = txtLabelArray[i]["percentage"]
+	txtLabel.Size = UDim2.fromOffset(percentage, 15)
+	txtLabel.Text = tostring(txtLabelArray[i]["text"]..": "..percentage.." %")
+	txtLabel.TextXAlignment = 0 -- align left
+
+	txtLabel.Font = txtLabelArray[i]["font"]
+	txtLabel.TextSize = txtLabelArray[i]["size"]
+	txtLabel.TextColor3 = Color3.new(1, 1, 1)
+
+	if (percentage >= 80) then
+		txtLabel.BackgroundColor3 = Color3.fromRGB(90, 255, 90)
+	elseif (percentage >= 40 and percentage < 80) then
+		txtLabel.BackgroundColor3 = Color3.fromRGB(253, 128, 8)
+	else
+		txtLabel.BackgroundColor3 = Color3.fromRGB(255, 90, 90)
+	end
+
+	txtLabel.Transparency = 0.5	
+	txtLabel.Parent = txtFrame
+
+	-- Visual aesthetics
+	local roundedCorner = Instance.new("UICorner")
+	roundedCorner.Parent = txtLabel
+	
 
 end
 
@@ -153,15 +217,27 @@ UIS.inputChanged:Connect(function(input)
 		then
 			print("mouse.Target.Name is " .. tostring(mouse.Target.Name))
 
+			-- adjust: 
 			parentFrame.Position = UDim2.new(0, mouse.X + PARTS_DISTANCE, 0, mouse.Y - PARTS_DISTANCE) 
 
 			parentFrame.Visible = true
 			parentFrame.Active = true
-			
+
+
+			-- 2nd frame
+			txtFrame.Position = UDim2.new(0, mouse.X + PARTS_DISTANCE, 0, mouse.Y - 150) 
+
+			txtFrame.Visible = true
+			txtFrame.Active = true
+
 		else
 			print("parentFrame is not active")
 			parentFrame.Visible = false
 			parentFrame.Active = false
+
+			-- 2nd frame
+			txtFrame.Visible = false
+			txtFrame.Active = false		
 		end
 	end
 end)
