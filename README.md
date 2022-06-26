@@ -3,6 +3,8 @@
 <br/>
 This is an example for Basic 3D GUI.
 <br/>
+Place the basic_3d_gui.lua GUI Lua script under the StarterPlayer -> StarterPlayerScript -> basic_3d_gui.lua
+<br/>
 1) Create parts and added Decal (Texture image) to the parts.
 <br/>
 2) Attached each parts with RopeConstraint
