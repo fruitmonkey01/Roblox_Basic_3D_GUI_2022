@@ -1,3 +1,4 @@
+print("Hello world!")
 -- References: 
 -- For Text Alignment (X-Axis): https://developer.roblox.com/en-us/api-reference/property/TextLabel/TextXAlignment
 
@@ -11,10 +12,18 @@ local playerGui = player:WaitForChild("PlayerGui")
 local mouse = player:GetMouse()
 
 
--- Create Menu
+-- Create GUI Menu
 local screenGui = Instance.new("ScreenGui", playerGui)
 
--- Array of text labels/fonts/sizes to output
+-- UI Layout offset related to the mouse position
+local RESEARCH_FRAME_OFFSET_X = 5
+local RESEARCH_FRAME_OFFSET_Y = 5
+local PERCENTAGE_BAR_FRAME_OFFSET_X = 5
+local PERCENTAGE_BAR_FRAME_OFFSET_Y = -100
+
+
+-- First GUI for Research Info
+-- Array of Research info's text labels/fonts/sizes to output
 local labelArray = {
 	{text = "BasicResearch", font = Enum.Font.FredokaOne, size = 25},
 	{text = "PointsNeeded: 100", font = Enum.Font.FredokaOne, size = 25},
@@ -26,14 +35,14 @@ local parentFrame = Instance.new("Frame", screenGui)
 parentFrame.AutomaticSize = Enum.AutomaticSize.XY
 parentFrame.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
 parentFrame.Size = UDim2.fromOffset(25, 100)
-parentFrame.Position = UDim2.new(0, mouse.X + 5, 0, mouse.Y + 5) -- UDim2.fromScale(0.1, 0.1)
+parentFrame.Position = UDim2.new(0, mouse.X + RESEARCH_FRAME_OFFSET_X, 0, mouse.Y + RESEARCH_FRAME_OFFSET_Y) -- UDim2.fromScale(0.1, 0.1)
 
--- Add a list layout
+-- Add Research info a list layout
 local listLayout = Instance.new("UIListLayout")
 listLayout.Padding = UDim.new(0, 5)
 listLayout.Parent = parentFrame
 
--- Set rounded corners and padding for visual aesthetics
+-- Set Research info rounded corners and padding for visual aesthetics
 local roundedCorner = Instance.new("UICorner")
 roundedCorner.Parent = parentFrame
 local uiPadding = Instance.new("UIPadding")
@@ -43,26 +52,30 @@ uiPadding.PaddingRight = UDim.new(0, 5)
 uiPadding.PaddingBottom = UDim.new(0, 5)
 uiPadding.Parent = parentFrame
 
--- Array of text labels/fonts/sizes to output
+
+
+
+-- Second UI for Percentage Bars
+-- Array of Percentage Bar text labels/fonts/sizes to output
 local txtLabelArray = {
 	{text = "Energy", font = Enum.Font.FredokaOne, size = 25, percentage = 75},
 	{text = "People", font = Enum.Font.FredokaOne, size = 25, percentage = 100},
 	{text = "Resource", font = Enum.Font.FredokaOne, size = 25, percentage = 20}
 }
 
--- Create 2nd automatically-sized text frame
+-- Create Percentage Bar automatically-sized text frame
 local txtFrame = Instance.new("Frame", screenGui)
 txtFrame.AutomaticSize = Enum.AutomaticSize.XY
 txtFrame.BackgroundColor3 = Color3.fromRGB(90, 90, 90)
-txtFrame.Size = UDim2.fromOffset(25, 100)
-txtFrame.Position = UDim2.new(0, mouse.X + 5, 0, mouse.Y - 100)
+txtFrame.Size = UDim2.fromOffset(100, 100)
+txtFrame.Position = UDim2.new(0, mouse.X + PERCENTAGE_BAR_FRAME_OFFSET_X, 0, mouse.Y + PERCENTAGE_BAR_FRAME_OFFSET_Y)
 
--- Add 2nd list layout
+-- Add Percentage Bar list layout
 local listLayout = Instance.new("UIListLayout")
 listLayout.Padding = UDim.new(0, 5)
 listLayout.Parent = txtFrame
 
--- Set 2nd rounded corners and padding for visual aesthetics
+-- Set Percentage Bar's rounded corners and padding for visual aesthetics
 local roundedCorner = Instance.new("UICorner")
 roundedCorner.Parent = txtFrame
 local uiPadding = Instance.new("UIPadding")
@@ -73,59 +86,70 @@ uiPadding.PaddingBottom = UDim.new(0, 5)
 uiPadding.Parent = txtFrame
 
 
-for i = 1, #labelArray do
-	-- Create an automatically-sized text label from array
-	local childLabel = Instance.new("TextLabel")
-	childLabel.AutomaticSize = Enum.AutomaticSize.XY
-	childLabel.Size = UDim2.fromOffset(75, 15)
-	childLabel.Text = labelArray[i]["text"]
-	childLabel.Font = labelArray[i]["font"]
-	childLabel.TextSize = labelArray[i]["size"]
-	childLabel.TextColor3 = Color3.new(1, 1, 1)
-	childLabel.Parent = parentFrame
+local function createResearchGUI()
+	for i = 1, #labelArray do
+		-- Create an automatically-sized text label from array
+		local childLabel = Instance.new("TextLabel")
+		childLabel.AutomaticSize = Enum.AutomaticSize.XY
+		childLabel.Size = UDim2.fromOffset(75, 15)
+		childLabel.Text = labelArray[i]["text"]
+		childLabel.Font = labelArray[i]["font"]
+		childLabel.TextSize = labelArray[i]["size"]
+		childLabel.TextColor3 = Color3.new(1, 1, 1)
+		childLabel.Parent = parentFrame
 
-	-- Visual aesthetics
-	local roundedCorner = Instance.new("UICorner")
-	roundedCorner.Parent = childLabel
-	local uiPadding = Instance.new("UIPadding")
-	uiPadding.PaddingTop = UDim.new(0, 5)
-	uiPadding.PaddingLeft = UDim.new(0, 5)
-	uiPadding.PaddingRight = UDim.new(0, 5)
-	uiPadding.PaddingBottom = UDim.new(0, 5)
-	uiPadding.Parent = childLabel
+		-- Visual aesthetics
+		local roundedCorner = Instance.new("UICorner")
+		roundedCorner.Parent = childLabel
+		local uiPadding = Instance.new("UIPadding")
+		uiPadding.PaddingTop = UDim.new(0, 5)
+		uiPadding.PaddingLeft = UDim.new(0, 5)
+		uiPadding.PaddingRight = UDim.new(0, 5)
+		uiPadding.PaddingBottom = UDim.new(0, 5)
+		uiPadding.Parent = childLabel
 
-end
-
-for i = 1, #txtLabelArray do
-
-	local txtLabel = Instance.new("TextLabel")
-	txtLabel.AutomaticSize = Enum.AutomaticSize.Y
-	local percentage = txtLabelArray[i]["percentage"]
-	txtLabel.Size = UDim2.fromOffset(percentage, 15)
-	txtLabel.Text = tostring(txtLabelArray[i]["text"]..": "..percentage.." %")
-	txtLabel.TextXAlignment = 0 -- align left
-
-	txtLabel.Font = txtLabelArray[i]["font"]
-	txtLabel.TextSize = txtLabelArray[i]["size"]
-	txtLabel.TextColor3 = Color3.new(1, 1, 1)
-
-	if (percentage >= 80) then
-		txtLabel.BackgroundColor3 = Color3.fromRGB(90, 255, 90)
-	elseif (percentage >= 40 and percentage < 80) then
-		txtLabel.BackgroundColor3 = Color3.fromRGB(253, 128, 8)
-	else
-		txtLabel.BackgroundColor3 = Color3.fromRGB(255, 90, 90)
 	end
-
-	txtLabel.Transparency = 0.5	
-	txtLabel.Parent = txtFrame
-
-	-- Visual aesthetics
-	local roundedCorner = Instance.new("UICorner")
-	roundedCorner.Parent = txtLabel
-	
-
 end
+
+-- Added percentage bars for Energy, People, and Resource.
+local function createPercentageBars()
+	local percentage_scale = 2
+	for i = 1, #txtLabelArray do
+
+		local txtLabel = Instance.new("TextLabel")
+		txtLabel.AutomaticSize = Enum.AutomaticSize.Y
+		local percentage_gui = txtLabelArray[i]["percentage"]
+		local percentage_width = percentage_gui * percentage_scale
+		txtLabel.Size = UDim2.fromOffset(percentage_width, 15)
+		txtLabel.Text = tostring(txtLabelArray[i]["text"]..": "..percentage_gui.." %")
+		txtLabel.TextXAlignment = 0 -- align left
+
+		txtLabel.Font = txtLabelArray[i]["font"]
+		txtLabel.TextSize = txtLabelArray[i]["size"]
+		txtLabel.TextColor3 = Color3.new(1, 1, 1)
+
+		if (percentage_gui >= 80) then
+			txtLabel.BackgroundColor3 = Color3.fromRGB(90, 255, 90)
+		elseif (percentage_gui >= 40 and percentage_gui < 80) then
+			txtLabel.BackgroundColor3 = Color3.fromRGB(253, 128, 8)
+		else
+			txtLabel.BackgroundColor3 = Color3.fromRGB(255, 90, 90)
+		end
+
+		txtLabel.Transparency = 0.5	
+		txtLabel.Parent = txtFrame
+
+		-- Visual aesthetics
+		local roundedCorner = Instance.new("UICorner")
+		roundedCorner.Parent = txtLabel
+
+
+	end
+end
+
+-- create GUI callout
+createResearchGUI()
+createPercentageBars()
 
 
 -- create parts
